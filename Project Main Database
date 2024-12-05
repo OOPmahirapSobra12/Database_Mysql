@@ -107,24 +107,15 @@ report varchar(500) not null,
 foreign key (ID) references accounts(ID)
 );
  
- create table if not exists roomhistory( -- room login history
- ID varchar(100) not null,
- room_name varchar(100) not null,
- room_code varchar(100) not null,
- log_date varchar(100) not null,
- log_time varchar(100) not null,
- log_history_code int primary key auto_increment,
- foreign key (ID) references accounts(ID)
- );
- 
- CREATE TABLE IF NOT EXISTS logshistory ( 
+ CREATE TABLE IF NOT EXISTS logshistory ( -- room login
     ID VARCHAR(100) NOT NULL,
     log_in_date VARCHAR(100) NOT NULL,
     log_in_time VARCHAR(100) NOT NULL,
     log_out_date VARCHAR(100) DEFAULT NULL,
     log_out_time VARCHAR(100) DEFAULT NULL,
-    room varchar(100) not null,
+	room_code varchar(100) not null,
     log_history_code INT PRIMARY KEY AUTO_INCREMENT,
+    foreign key (room_code) references roomlist(room_code),
     foreign key (ID) references accounts(ID)
 );
 
