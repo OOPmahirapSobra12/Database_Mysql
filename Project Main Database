@@ -6,10 +6,12 @@ CREATE TABLE IF NOT EXISTS accounts (
     fname VARCHAR(100) NOT NULL,
     lname VARCHAR(100) NOT NULL,
     ID VARCHAR(100) NOT NULL PRIMARY KEY ,
-    course varchar(100),
-	section varchar(50),
+    course_name varchar(100),
+	sections varchar(50),
     accesslevel VARCHAR(100) NOT NULL,
-    image BLOB  -- Column to store image data (BLOB type)
+    image BLOB,  -- Column to store image data (BLOB type)
+	FOREIGN KEY (sections) REFERENCES section(sections),
+    FOREIGN KEY (course_name) REFERENCES courses(course_name)
 );
 
 create table if not exists courses(
@@ -19,11 +21,11 @@ course_name varchar(100) not null primary key
 CREATE TABLE IF NOT EXISTS section (
     sections VARCHAR(100) primary key not NULL,
     course_name varchar(100),
-    FOREIGN KEY (course_name) REFERENCES course(course_name) -- Referencing 'course_ID' in 'course' table
+    FOREIGN KEY (course_name) REFERENCES courses(course_name) -- Referencing 'course_ID' in 'course' table
 );
 
 create table if not exists listofsubjects(
-    subject_name VARCHAR(100),
+    subject_name VARCHAR(100) primary key,
     sections VARCHAR(100),
     course_name VARCHAR(100),
     FOREIGN KEY (sections) REFERENCES section(sections),
@@ -33,15 +35,17 @@ create table if not exists listofsubjects(
 
 
 create table if not exists requests(
-requesterID varchar(100) not null,
-room varchar(100) not null,
+ID varchar(100) not null,
+room_code varchar(100) not null,
 request varchar(500) not null,
 request_d varchar(100) not null,
 request_t varchar(100) not null,
 request_t_in varchar(100) not null,
 request_t_out varchar(100) not null,
 requestID int not null primary key auto_increment,
-request_type varchar(100) not null
+request_type varchar(100),
+foreign key (ID) references accounts(ID),
+foreign key (room_code) references roomlist(room_code)
 );
 
 create table if not exists sched(
@@ -53,7 +57,7 @@ shed_id varchar(100) not null ,
     subject_name VARCHAR(100),
     sections VARCHAR(100),
     course_name VARCHAR(100),
-    FOREIGN KEY (subject_name) REFERENCES subjects(subject_name),
+    FOREIGN KEY (subject_name) REFERENCES listofsubjects(subject_name),
     FOREIGN KEY (sections) REFERENCES section(sections),
     FOREIGN KEY (course_name) REFERENCES courses(course_name),
     foreign key (room_code) references roomlist(room_code)
@@ -68,7 +72,7 @@ shed_id varchar(100) not null,
     subject_name VARCHAR(100),
     sections VARCHAR(100),
     course_name VARCHAR(100),
-    FOREIGN KEY (subject_name) REFERENCES subjects(subject_name),
+    FOREIGN KEY (subject_name) REFERENCES listofsubjects(subject_name),
     FOREIGN KEY (sections) REFERENCES section(sections),
     FOREIGN KEY (course_name) REFERENCES courses(course_name),
     foreign key (room_code) references roomlist(room_code)
@@ -86,54 +90,91 @@ CREATE TABLE IF NOT EXISTS roomlist (
 );
 
 create table if not exists feedback(
-sender varchar(100) not null,
 ID varchar(100) not null,
+feedbackid varchar(100) not null,
 d varchar(100) not null,
 t varchar(100) not null,
-feedback varchar(500) not null
+feedback varchar(500) not null,
+foreign key (ID) references accounts(ID)
 );
 
 create table if not exists report(
-sender varchar(100) not null,
-ID varchar(100) not null primary key auto_increment,
+ID varchar(100) not null,
+reportid int not null primary key auto_increment,
 d varchar(100) not null,
 t varchar(100) not null,
-report varchar(500) not null
+report varchar(500) not null,
+foreign key (ID) references accounts(ID)
 );
  
- create table if not exists roomhistory( -- room log in history
- U_ID varchar(100) not null,
+ create table if not exists roomhistory( -- room login history
+ ID varchar(100) not null,
  room_name varchar(100) not null,
  room_code varchar(100) not null,
  log_date varchar(100) not null,
  log_time varchar(100) not null,
- log_history_code int primary key auto_increment
+ log_history_code int primary key auto_increment,
+ foreign key (ID) references accounts(ID)
  );
  
  CREATE TABLE IF NOT EXISTS logshistory ( 
-    U_ID VARCHAR(100) NOT NULL,
+    ID VARCHAR(100) NOT NULL,
     log_in_date VARCHAR(100) NOT NULL,
     log_in_time VARCHAR(100) NOT NULL,
     log_out_date VARCHAR(100) DEFAULT NULL,
     log_out_time VARCHAR(100) DEFAULT NULL,
     room varchar(100) not null,
-    log_history_code INT PRIMARY KEY AUTO_INCREMENT
+    log_history_code INT PRIMARY KEY AUTO_INCREMENT,
+    foreign key (ID) references accounts(ID)
 );
 
 CREATE TABLE IF NOT EXISTS login_history ( -- log in history
-    U_ID VARCHAR(100) NOT NULL,
+    ID VARCHAR(100) NOT NULL,
     log_in_date VARCHAR(100) NOT NULL,
     log_in_time VARCHAR(100) NOT NULL,
     log_out_date VARCHAR(100) DEFAULT NULL,
     log_out_time VARCHAR(100) DEFAULT NULL,
-    log_history_code INT PRIMARY KEY AUTO_INCREMENT
+    log_history_code INT PRIMARY KEY AUTO_INCREMENT,
+    foreign key (ID) references accounts(ID)
 );
 
 CREATE TABLE IF NOT EXISTS staff_request_log ( -- staff, using admin, history
-    U_ID VARCHAR(100) NOT NULL,
+    ID VARCHAR(100) NOT NULL,
     log_in_date VARCHAR(100) NOT NULL,
     log_in_time VARCHAR(100) NOT NULL,
     log_out_date VARCHAR(100) DEFAULT NULL,
     log_out_time VARCHAR(100) DEFAULT NULL,
-    log_history_code INT PRIMARY KEY AUTO_INCREMENT
+    log_history_code INT PRIMARY KEY AUTO_INCREMENT,
+    foreign key (ID) references accounts(ID)
 );
+
+create table if not exists past_schedtemp (
+	room_code varchar(100) not null primary key,
+	room_time_in varchar(100) not null,
+	room_time_out varchar(100) not null,
+	room_date varchar(100) not null,
+	shed_id varchar(100) not null,
+    subject_name VARCHAR(100),
+    sections VARCHAR(100),
+    course_name VARCHAR(100),
+    FOREIGN KEY (subject_name) REFERENCES listofsubjects(subject_name),
+    FOREIGN KEY (sections) REFERENCES section(sections),
+    FOREIGN KEY (course_name) REFERENCES courses(course_name),
+    foreign key (room_code) references roomlist(room_code)
+);
+
+create table if not exists denied_request(
+	ID VARCHAR(100) NOT NULL,
+    room_code varchar(100) not null,
+	request varchar(500) not null,
+    foreign key (ID) references accounts(ID),
+    foreign key (room_code) references roomlist(room_code)
+);
+
+create table if not exists accepted_request(
+	ID VARCHAR(100) NOT NULL,
+    room_code varchar(100) not null,
+	request varchar(500) not null,
+    foreign key (ID) references accounts(ID),
+    foreign key (room_code) references roomlist(room_code)
+)
