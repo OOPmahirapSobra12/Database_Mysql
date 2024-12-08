@@ -1,83 +1,20 @@
-create database if not exists Project;
-use Project;
-CREATE TABLE IF NOT EXISTS accounts (
-    username VARCHAR(100) NOT NULL,
-    pword VARCHAR(50) NOT NULL,
-    fname VARCHAR(100) NOT NULL,
-    lname VARCHAR(100) NOT NULL,
-    ID VARCHAR(100) NOT NULL PRIMARY KEY ,
-    course_name varchar(100),
-	sections varchar(50),
-    accesslevel VARCHAR(100) NOT NULL,
-    image BLOB,  -- Column to store image data (BLOB type)
-	FOREIGN KEY (sections) REFERENCES section(sections),
-    FOREIGN KEY (course_name) REFERENCES courses(course_name)
+CREATE DATABASE IF NOT EXISTS Project;
+USE Project;
+
+-- Create 'courses' table
+CREATE TABLE IF NOT EXISTS courses (
+	course_id int unique auto_increment,
+    course_name VARCHAR(100) NOT NULL PRIMARY KEY
 );
 
-create table if not exists courses(
-course_name varchar(100) not null primary key
-);
-
+-- Create 'section' table
 CREATE TABLE IF NOT EXISTS section (
-    sections VARCHAR(100) primary key not NULL,
-    course_name varchar(100),
-    FOREIGN KEY (course_name) REFERENCES courses(course_name) -- Referencing 'course_ID' in 'course' table
-);
-
-create table if not exists listofsubjects(
-    subject_name VARCHAR(100) primary key,
-    sections VARCHAR(100),
+    sections VARCHAR(100) PRIMARY KEY NOT NULL,
     course_name VARCHAR(100),
-    FOREIGN KEY (sections) REFERENCES section(sections),
-    FOREIGN KEY (course_name) REFERENCES courses(course_name)
+    FOREIGN KEY (course_name) REFERENCES courses(course_name) on update cascade on delete restrict
 );
 
-
-
-create table if not exists requests(
-ID varchar(100) not null,
-room_code varchar(100) not null,
-request varchar(500) not null,
-request_d varchar(100) not null,
-request_t varchar(100) not null,
-request_t_in varchar(100) not null,
-request_t_out varchar(100) not null,
-requestID int not null primary key auto_increment,
-request_type varchar(100),
-foreign key (ID) references accounts(ID),
-foreign key (room_code) references roomlist(room_code)
-);
-
-create table if not exists sched(
-room_code varchar(100) not null primary key, 
-room_time_in varchar(100) not null,
-room_time_out varchar(100) not null,
-room_day varchar(100) not null,
-shed_id varchar(100) not null ,
-    subject_name VARCHAR(100),
-    sections VARCHAR(100),
-    course_name VARCHAR(100),
-    FOREIGN KEY (subject_name) REFERENCES listofsubjects(subject_name),
-    FOREIGN KEY (sections) REFERENCES section(sections),
-    FOREIGN KEY (course_name) REFERENCES courses(course_name),
-    foreign key (room_code) references roomlist(room_code)
-);
-
-create table if not exists schedtemp(
-room_code varchar(100) not null primary key,
-room_time_in varchar(100) not null,
-room_time_out varchar(100) not null,
-room_date varchar(100) not null,
-shed_id varchar(100) not null,
-    subject_name VARCHAR(100),
-    sections VARCHAR(100),
-    course_name VARCHAR(100),
-    FOREIGN KEY (subject_name) REFERENCES listofsubjects(subject_name),
-    FOREIGN KEY (sections) REFERENCES section(sections),
-    FOREIGN KEY (course_name) REFERENCES courses(course_name),
-    foreign key (room_code) references roomlist(room_code)
-);
-
+-- Create 'roomlist' table
 CREATE TABLE IF NOT EXISTS roomlist (
     room_code VARCHAR(100) NOT NULL PRIMARY KEY,
     room_name VARCHAR(100) NOT NULL,
@@ -89,83 +26,163 @@ CREATE TABLE IF NOT EXISTS roomlist (
     room_status VARCHAR(20) NOT NULL      -- Options: 'Open' or 'Closed'
 );
 
-create table if not exists feedback(
-ID varchar(100) not null,
-feedbackid varchar(100) not null,
-d varchar(100) not null,
-t varchar(100) not null,
-feedback varchar(500) not null,
-foreign key (ID) references accounts(ID)
+-- Create 'accounts' table
+CREATE TABLE IF NOT EXISTS accounts (
+    username VARCHAR(100) NOT NULL,
+    pword VARCHAR(50) NOT NULL,
+    fname VARCHAR(100) NOT NULL,
+    lname VARCHAR(100) NOT NULL,
+    ID VARCHAR(100) NOT NULL PRIMARY KEY,
+    course_name VARCHAR(100),
+    sections VARCHAR(50),
+    accesslevel VARCHAR(100) NOT NULL,
+    image BLOB, -- Column to store image data (BLOB type)
+    FOREIGN KEY (course_name) REFERENCES courses(course_name) on update cascade on delete restrict,
+    FOREIGN KEY (sections) REFERENCES section(sections) on update cascade on delete restrict -- Foreign key for 'sections'
 );
 
-create table if not exists report(
-ID varchar(100) not null,
-reportid int not null primary key auto_increment,
-d varchar(100) not null,
-t varchar(100) not null,
-report varchar(500) not null,
-foreign key (ID) references accounts(ID)
+-- Create 'listofsubjects' table
+CREATE TABLE IF NOT EXISTS listofsubjects (
+	subject_id int unique auto_increment,
+    subject_name VARCHAR(100) PRIMARY KEY,
+    sections VARCHAR(100),
+    course_name VARCHAR(100),
+    FOREIGN KEY (course_name) REFERENCES courses(course_name) on update cascade on delete restrict, 
+    FOREIGN KEY (sections) REFERENCES section(sections) on update cascade on delete restrict -- Foreign key for 'sections'
 );
- 
- CREATE TABLE IF NOT EXISTS logshistory ( -- room login
+
+-- Create 'requests' table
+CREATE TABLE IF NOT EXISTS requests (
     ID VARCHAR(100) NOT NULL,
-    log_in_date VARCHAR(100) NOT NULL,
-    log_in_time VARCHAR(100) NOT NULL,
-    log_out_date VARCHAR(100) DEFAULT NULL,
-    log_out_time VARCHAR(100) DEFAULT NULL,
-	room_code varchar(100) not null,
-    log_history_code INT PRIMARY KEY AUTO_INCREMENT,
-    foreign key (room_code) references roomlist(room_code),
-    foreign key (ID) references accounts(ID)
+    room_code VARCHAR(100) NOT NULL,
+    request VARCHAR(500) NOT NULL,
+    request_d VARCHAR(100) NOT NULL, -- requested date or day
+    request_t_in VARCHAR(100) NOT NULL,
+    request_t_out VARCHAR(100) NOT NULL,
+    requestID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    request_type VARCHAR(100), -- accepted or denied
+    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade on delete restrict,
+    FOREIGN KEY (room_code) REFERENCES roomlist(room_code) on update cascade on delete restrict
 );
 
-CREATE TABLE IF NOT EXISTS login_history ( -- log in history
-    ID VARCHAR(100) NOT NULL,
-    log_in_date VARCHAR(100) NOT NULL,
-    log_in_time VARCHAR(100) NOT NULL,
-    log_out_date VARCHAR(100) DEFAULT NULL,
-    log_out_time VARCHAR(100) DEFAULT NULL,
-    log_history_code INT PRIMARY KEY AUTO_INCREMENT,
-    foreign key (ID) references accounts(ID)
-);
-
-CREATE TABLE IF NOT EXISTS staff_request_log ( -- staff, using admin, history
-    ID VARCHAR(100) NOT NULL,
-    log_in_date VARCHAR(100) NOT NULL,
-    log_in_time VARCHAR(100) NOT NULL,
-    log_out_date VARCHAR(100) DEFAULT NULL,
-    log_out_time VARCHAR(100) DEFAULT NULL,
-    log_history_code INT PRIMARY KEY AUTO_INCREMENT,
-    foreign key (ID) references accounts(ID)
-);
-
-create table if not exists past_schedtemp (
-	room_code varchar(100) not null primary key,
-	room_time_in varchar(100) not null,
-	room_time_out varchar(100) not null,
-	room_date varchar(100) not null,
-	shed_id varchar(100) not null,
+-- Create 'sched' table
+CREATE TABLE IF NOT EXISTS sched (
+    room_code VARCHAR(100) NOT NULL PRIMARY KEY,
+    room_time_in VARCHAR(100) NOT NULL,
+    room_time_out VARCHAR(100) NOT NULL,
+    room_day VARCHAR(100) NOT NULL,
+    shed_id VARCHAR(100) unique
+    ,
     subject_name VARCHAR(100),
     sections VARCHAR(100),
     course_name VARCHAR(100),
-    FOREIGN KEY (subject_name) REFERENCES listofsubjects(subject_name),
-    FOREIGN KEY (sections) REFERENCES section(sections),
-    FOREIGN KEY (course_name) REFERENCES courses(course_name),
-    foreign key (room_code) references roomlist(room_code)
+    FOREIGN KEY (subject_name) REFERENCES listofsubjects(subject_name) on update cascade on delete restrict,
+    FOREIGN KEY (course_name) REFERENCES courses(course_name) on update cascade on delete restrict,
+    FOREIGN KEY (room_code) REFERENCES roomlist(room_code) on update cascade on delete restrict,
+    FOREIGN KEY (sections) REFERENCES section(sections) on update cascade on delete restrict -- Foreign key for 'sections'
 );
 
-create table if not exists denied_request(
-	ID VARCHAR(100) NOT NULL,
-    room_code varchar(100) not null,
-	request varchar(500) not null,
-    foreign key (ID) references accounts(ID),
-    foreign key (room_code) references roomlist(room_code)
+-- Create 'schedtemp' table
+CREATE TABLE IF NOT EXISTS schedtemp (
+    room_code VARCHAR(100) NOT NULL PRIMARY KEY,
+    room_time_in VARCHAR(100) NOT NULL,
+    room_time_out VARCHAR(100) NOT NULL,
+    room_date VARCHAR(100) NOT NULL,
+    shed_id VARCHAR(100) NOT NULL,
+    subject_name VARCHAR(100),
+    sections VARCHAR(100),
+    course_name VARCHAR(100),
+    FOREIGN KEY (subject_name) REFERENCES listofsubjects(subject_name) on update cascade on delete restrict,
+    FOREIGN KEY (course_name) REFERENCES courses(course_name) on update cascade on delete restrict,
+    FOREIGN KEY (room_code) REFERENCES roomlist(room_code) on update cascade on delete restrict,
+    FOREIGN KEY (sections) REFERENCES section(sections) on update cascade on delete restrict -- Foreign key for 'sections'
 );
 
-create table if not exists accepted_request(
-	ID VARCHAR(100) NOT NULL,
-    room_code varchar(100) not null,
-	request varchar(500) not null,
-    foreign key (ID) references accounts(ID),
-    foreign key (room_code) references roomlist(room_code)
-)
+-- Create 'feedback' table
+CREATE TABLE IF NOT EXISTS feedback (
+    ID VARCHAR(100) NOT NULL,
+    feedbackid INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    d VARCHAR(100) NOT NULL,
+    t VARCHAR(100) NOT NULL,
+    feedback VARCHAR(500) NOT NULL,
+    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade on delete restrict
+);
+
+-- Create 'report' table
+CREATE TABLE IF NOT EXISTS report (
+    ID VARCHAR(100) NOT NULL,
+    reportid INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    d VARCHAR(100) NOT NULL,
+    t VARCHAR(100) NOT NULL,
+    report VARCHAR(500) NOT NULL,
+    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade on delete restrict
+);
+
+-- Create 'logshistory' table (room login history)
+CREATE TABLE IF NOT EXISTS room_logshistory (
+    ID VARCHAR(100) NOT NULL,
+    log_in_date VARCHAR(100) NOT NULL,
+    log_in_time VARCHAR(100) NOT NULL,
+    log_out_date VARCHAR(100) DEFAULT NULL,
+    log_out_time VARCHAR(100) DEFAULT NULL,
+    room_code VARCHAR(100) NOT NULL,
+    log_history_code INT PRIMARY KEY AUTO_INCREMENT,
+    FOREIGN KEY (room_code) REFERENCES roomlist(room_code) on update cascade on delete restrict,
+    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade on delete restrict
+);
+
+-- Create 'login_history' table (log in history)
+CREATE TABLE IF NOT EXISTS login_history (
+    ID VARCHAR(100) NOT NULL,
+    log_in_date VARCHAR(100) NOT NULL,
+    log_in_time VARCHAR(100) NOT NULL,
+    log_out_date VARCHAR(100),
+    log_out_time VARCHAR(100),
+    log_history_code INT PRIMARY KEY AUTO_INCREMENT,
+    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade on delete restrict
+);
+
+-- Create 'staff_request_log' table (staff history using admin)
+CREATE TABLE IF NOT EXISTS staff_request_log (
+    ID VARCHAR(100) NOT NULL,
+    log_in_date VARCHAR(100) NOT NULL,
+    log_in_time VARCHAR(100) NOT NULL,
+    log_out_date VARCHAR(100),
+    log_out_time VARCHAR(100),
+    log_history_code INT PRIMARY KEY AUTO_INCREMENT,
+    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade on delete restrict
+);
+
+-- Create 'past_schedtemp' table
+CREATE TABLE IF NOT EXISTS past_schedtemp (
+    room_code VARCHAR(100) NOT NULL PRIMARY KEY,
+    room_time_in VARCHAR(100) NOT NULL,
+    room_time_out VARCHAR(100) NOT NULL,
+    room_date VARCHAR(100) NOT NULL,
+    shed_id VARCHAR(100) NOT NULL,
+    subject_name VARCHAR(100),
+    sections VARCHAR(100),
+    course_name VARCHAR(100),
+    FOREIGN KEY (subject_name) REFERENCES listofsubjects(subject_name) on update cascade on delete restrict, 
+    FOREIGN KEY (sections) REFERENCES section(sections) on update cascade on delete restrict, -- Foreign key for 'sections'
+    FOREIGN KEY (course_name) REFERENCES courses(course_name) on update cascade on delete restrict,
+    FOREIGN KEY (room_code) REFERENCES roomlist(room_code) on update cascade on delete restrict
+);
+
+-- Create 'denied_request' table
+CREATE TABLE IF NOT EXISTS denied_request (
+    ID VARCHAR(100) NOT NULL,
+    requestID VARCHAR(100) NOT NULL,
+    request VARCHAR(500) NOT NULL,
+    request_type VARCHAR(100), -- accepted or denied
+    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade on delete restrict
+);
+
+-- Create 'accepted_request' table
+CREATE TABLE IF NOT EXISTS accepted_request (
+    ID VARCHAR(100) NOT NULL,
+    requestID VARCHAR(100) NOT NULL,
+    request VARCHAR(500) NOT NULL,
+    request_type VARCHAR(100), -- accepted or denied
+    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade on delete restrict
+);
