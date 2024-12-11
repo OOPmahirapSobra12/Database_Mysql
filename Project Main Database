@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS courses (
 CREATE TABLE IF NOT EXISTS section (
     sections VARCHAR(100) PRIMARY KEY NOT NULL,
     course_name VARCHAR(100),
-    FOREIGN KEY (course_name) REFERENCES courses(course_name) on update cascade on delete restrict
+    FOREIGN KEY (course_name) REFERENCES courses(course_name) on update cascade
 );
 
 -- Create 'roomlist' table
@@ -37,8 +37,8 @@ CREATE TABLE IF NOT EXISTS accounts (
     sections VARCHAR(50),
     accesslevel VARCHAR(100) NOT NULL,
     image BLOB, -- Column to store image data (BLOB type)
-    FOREIGN KEY (course_name) REFERENCES courses(course_name) on update cascade on delete restrict,
-    FOREIGN KEY (sections) REFERENCES section(sections) on update cascade on delete restrict -- Foreign key for 'sections'
+    FOREIGN KEY (course_name) REFERENCES courses(course_name) on update cascade,
+    FOREIGN KEY (sections) REFERENCES section(sections) on update cascade -- Foreign key for 'sections'
 );
 
 -- Create 'listofsubjects' table
@@ -47,8 +47,8 @@ CREATE TABLE IF NOT EXISTS listofsubjects (
     subject_name VARCHAR(100) PRIMARY KEY,
     sections VARCHAR(100),
     course_name VARCHAR(100),
-    FOREIGN KEY (course_name) REFERENCES courses(course_name) on update cascade on delete restrict, 
-    FOREIGN KEY (sections) REFERENCES section(sections) on update cascade on delete restrict -- Foreign key for 'sections'
+    FOREIGN KEY (course_name) REFERENCES courses(course_name) on update cascade, 
+    FOREIGN KEY (sections) REFERENCES section(sections) on update cascade -- Foreign key for 'sections'
 );
 
 -- Create 'requests' table
@@ -61,8 +61,8 @@ CREATE TABLE IF NOT EXISTS requests (
     request_t_out VARCHAR(100) NOT NULL,
     requestID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     request_type VARCHAR(100), -- accepted or denied
-    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade on delete restrict,
-    FOREIGN KEY (room_code) REFERENCES roomlist(room_code) on update cascade on delete restrict
+    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade,
+    FOREIGN KEY (room_code) REFERENCES roomlist(room_code) on update cascade
 );
 
 -- Create 'sched' table
@@ -75,10 +75,10 @@ CREATE TABLE IF NOT EXISTS sched (
     subject_name VARCHAR(100),
     sections VARCHAR(100),
     course_name VARCHAR(100),
-    FOREIGN KEY (subject_name) REFERENCES listofsubjects(subject_name) ON UPDATE CASCADE ON DELETE RESTRICT,
-    FOREIGN KEY (course_name) REFERENCES courses(course_name) ON UPDATE CASCADE ON DELETE RESTRICT,
-    FOREIGN KEY (room_code) REFERENCES roomlist(room_code) ON UPDATE CASCADE ON DELETE RESTRICT,
-    FOREIGN KEY (sections) REFERENCES section(sections) ON UPDATE CASCADE ON DELETE RESTRICT
+    FOREIGN KEY (subject_name) REFERENCES listofsubjects(subject_name) ON UPDATE CASCADE,
+    FOREIGN KEY (course_name) REFERENCES courses(course_name) ON UPDATE CASCADE,
+    FOREIGN KEY (room_code) REFERENCES roomlist(room_code) ON UPDATE CASCADE,
+    FOREIGN KEY (sections) REFERENCES section(sections) ON UPDATE CASCADE
 );
 
 -- Create 'schedtemp' table
@@ -91,10 +91,10 @@ CREATE TABLE IF NOT EXISTS schedtemp (
     subject_name VARCHAR(100),
     sections VARCHAR(100),
     course_name VARCHAR(100),
-    FOREIGN KEY (subject_name) REFERENCES listofsubjects(subject_name) ON UPDATE CASCADE ON DELETE RESTRICT,
-    FOREIGN KEY (course_name) REFERENCES courses(course_name) ON UPDATE CASCADE ON DELETE RESTRICT,
-    FOREIGN KEY (room_code) REFERENCES roomlist(room_code) ON UPDATE CASCADE ON DELETE RESTRICT,
-    FOREIGN KEY (sections) REFERENCES section(sections) ON UPDATE CASCADE ON DELETE RESTRICT
+    FOREIGN KEY (subject_name) REFERENCES listofsubjects(subject_name) ON UPDATE CASCADE,
+    FOREIGN KEY (course_name) REFERENCES courses(course_name) ON UPDATE CASCADE,
+    FOREIGN KEY (room_code) REFERENCES roomlist(room_code) ON UPDATE CASCADE,
+    FOREIGN KEY (sections) REFERENCES section(sections) ON UPDATE CASCADE
 );
 
 
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS feedback (
     d VARCHAR(100) NOT NULL,
     t VARCHAR(100) NOT NULL,
     feedback VARCHAR(500) NOT NULL,
-    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade on delete restrict
+    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade
 );
 
 -- Create 'report' table
@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS report (
     d VARCHAR(100) NOT NULL,
     t VARCHAR(100) NOT NULL,
     report VARCHAR(500) NOT NULL,
-    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade on delete restrict
+    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade
 );
 
 -- Create 'logshistory' table (room login history)
@@ -127,8 +127,8 @@ CREATE TABLE IF NOT EXISTS room_logshistory (
     log_out_time VARCHAR(100) DEFAULT NULL,
     room_code VARCHAR(100) NOT NULL,
     log_history_code INT PRIMARY KEY AUTO_INCREMENT,
-    FOREIGN KEY (room_code) REFERENCES roomlist(room_code) on update cascade on delete restrict,
-    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade on delete restrict
+    FOREIGN KEY (room_code) REFERENCES roomlist(room_code) on update cascade,
+    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade
 );
 
 -- Create 'login_history' table (log in history)
@@ -139,7 +139,7 @@ CREATE TABLE IF NOT EXISTS login_history (
     log_out_date VARCHAR(100) not null,
     log_out_time VARCHAR(100) not null,
     log_history_code INT PRIMARY KEY AUTO_INCREMENT,
-    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade on delete restrict
+    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade
 );
 
 -- Create 'staff_request_log' table (staff history using admin)
@@ -148,7 +148,7 @@ CREATE TABLE IF NOT EXISTS staff_request_log (
     log_in_date VARCHAR(100) NOT NULL,
     log_in_time VARCHAR(100) NOT NULL,
     log_history_code INT PRIMARY KEY AUTO_INCREMENT,
-    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade on delete restrict
+    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade
 );
 
 -- Create 'past_schedtemp' table
@@ -161,10 +161,10 @@ CREATE TABLE IF NOT EXISTS past_schedtemp (
     subject_name VARCHAR(100),
     sections VARCHAR(100),
     course_name VARCHAR(100),
-    FOREIGN KEY (subject_name) REFERENCES listofsubjects(subject_name) on update cascade on delete restrict, 
-    FOREIGN KEY (sections) REFERENCES section(sections) on update cascade on delete restrict, -- Foreign key for 'sections'
-    FOREIGN KEY (course_name) REFERENCES courses(course_name) on update cascade on delete restrict,
-    FOREIGN KEY (room_code) REFERENCES roomlist(room_code) on update cascade on delete restrict
+    FOREIGN KEY (subject_name) REFERENCES listofsubjects(subject_name) on update cascade, 
+    FOREIGN KEY (sections) REFERENCES section(sections) on update cascade, -- Foreign key for 'sections'
+    FOREIGN KEY (course_name) REFERENCES courses(course_name) on update cascade,
+    FOREIGN KEY (room_code) REFERENCES roomlist(room_code) on update cascade
 );
 
 -- Create 'denied_request' table
@@ -173,7 +173,7 @@ CREATE TABLE IF NOT EXISTS denied_request (
     requestID int unique auto_increment,
     request VARCHAR(500) NOT NULL,
     request_type VARCHAR(100), -- accepted or denied
-    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade on delete restrict
+    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade
 );
 
 -- Create 'accepted_request' table
@@ -182,5 +182,5 @@ CREATE TABLE IF NOT EXISTS accepted_request (
     requestID int unique auto_increment,
     request VARCHAR(500) NOT NULL,
     request_type VARCHAR(100), -- accepted or denied
-    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade on delete restrict
+    FOREIGN KEY (ID) REFERENCES accounts(ID) on update cascade
 );
