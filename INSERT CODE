@@ -1,0 +1,66 @@
+-- Insert data into 'courses' table
+INSERT INTO courses (course_name) VALUES 
+('BSIT 2A'),
+('BSIT 2B'),
+('BSIT 2C'),
+('BSIT 2D'),
+('BSCPE 2B'),
+('BSCPE 2C'),
+('BSCS 2A'),
+('BSCS 2B');
+
+-- Insert data into 'section' table
+INSERT INTO section (sections, course_name) VALUES 
+('BSIT 2A', 'BSIT 2A'),
+('BSIT 2B', 'BSIT 2B'),
+('BSIT 2C', 'BSIT 2C'),
+('BSIT 2D', 'BSIT 2D'),
+('BSCPE 2B', 'BSCPE 2B'),
+('BSCPE 2C', 'BSCPE 2C'),
+('BSCS 2A', 'BSCS 2A'),
+('BSCS 2B', 'BSCS 2B');
+
+-- Insert data into 'roomlist' table
+INSERT INTO roomlist (room_code, room_name, building, num_chairs, num_computers, num_laptops, occupancy_status, room_status) VALUES
+('EDTLAB', 'EDTECH LAB', 'Building B', 40, 20, 10, 'Not Occupied', 'Open'),
+('SDBLAB', 'SANDBOX LAB', 'Building B', 35, 15, 5, 'Not Occupied', 'Open'),
+('NXSLAB', 'NEXUS LAB', 'Building B', 30, 25, 10, 'Not Occupied', 'Open'),
+('105BLDG', 'LEC RM 4-104', 'Building B', 50, 0, 0, 'Not Occupied', 'Open'),
+('202BLDG', 'LEC RM 8-204', 'Building B', 40, 0, 0, 'Not Occupied', 'Open'),
+('AM202', 'LEC RM 7-203', 'New Building', 45, 0, 0, 'Not Occupied', 'Open'),
+('BLDG101', 'LEC RM 7-101', 'Building A', 30, 0, 0, 'Not Occupied', 'Open');
+
+-- Insert data into 'accounts' table
+INSERT INTO accounts (username, pword, fname, lname, ID, course_name, sections, accesslevel, image) VALUES
+('admin', 'admin', 'System', 'Administrator', 'ADMIN001', NULL, NULL, 'High', NULL),
+('admin2', 'admin', 'Admin', 'Two', 'ADMIN002', NULL, NULL, 'High', NULL),
+('staff', 'staff', 'Staff', 'Member', 'STAFF001', NULL, NULL, 'Mid', NULL),
+('staff2', 'staff', 'Staff', 'Two', 'STAFF002', NULL, NULL, 'Mid', NULL),
+('staff3', 'staff', 'Staff', 'Three', 'STAFF003', NULL, NULL, 'Mid', NULL),
+('student', 'student', 'Student', 'One', 'STUDENT001', 'BSIT 2A', 'BSIT 2A', 'Low', NULL),
+('student2', 'student', 'Student', 'Two', 'STUDENT002', 'BSIT 2B', 'BSIT 2B', 'Low', NULL),
+('student3', 'student', 'Student', 'Three', 'STUDENT003', 'BSCPE 2C', 'BSCPE 2C', 'Low', NULL),
+('student4', 'student', 'Student', 'Four', 'STUDENT004', 'BSCS 2A', 'BSCS 2A', 'Low', NULL),
+('student5', 'student', 'Student', 'Five', 'STUDENT005', 'BSCS 2B', 'BSCS 2B', 'Low', NULL);
+
+-- Insert data into 'listofsubjects' table
+INSERT INTO listofsubjects (subject_name, sections, course_name) VALUES
+('Living in the IT Era', 'BSIT 2A', 'BSIT 2A'),
+('The Contemporary World', 'BSIT 2A', 'BSIT 2A'),
+('Life and Works of Rizal', 'BSIT 2A', 'BSIT 2A'),
+('Recreational Activities', 'BSIT 2A', 'BSIT 2A'),
+('Probability and Statistics', 'BSIT 2A', 'BSIT 2A'),
+('Data Structures and Algorithm', 'BSIT 2A', 'BSIT 2A'),
+('Object Oriented Programming', 'BSIT 2A', 'BSIT 2A'),
+('Database Management System', 'BSIT 2A', 'BSIT 2A');
+
+-- Insert schedule data into 'sched' table
+INSERT INTO sched (room_code, room_time_in, room_time_out, room_day, subject_name, sections, course_name) VALUES
+('AM202', '01:00 PM', '03:00 PM', 'Monday', 'The Contemporary World', 'BSIT 2A', 'BSIT 2A'),
+('105BLDG', '04:00 PM', '06:00 PM', 'Monday', 'Life and Works of Rizal', 'BSIT 2A', 'BSIT 2A'),
+('EDTLAB', '07:00 AM', '09:00 AM', 'Monday', 'Living in the IT Era', 'BSIT 2A', 'BSIT 2A'),
+('BLDG101', '01:00 PM', '02:00 PM', 'Wednesday', 'Recreational Activities', 'BSIT 2A', 'BSIT 2A'),
+('202BLDG', '03:00 PM', '05:00 PM', 'Wednesday', 'Probability and Statistics', 'BSIT 2A', 'BSIT 2A'),
+('NXSLAB', '07:00 AM', '10:00 AM', 'Wednesday', 'Data Structures and Algorithm', 'BSIT 2A', 'BSIT 2A'),
+('NXSLAB', '10:00 AM', '01:00 PM', 'Thursday', 'Database Management System', 'BSIT 2A', 'BSIT 2A'),
+('SDBLAB', '07:00 PM', '10:00 PM', 'Thursday', 'Object Oriented Programming', 'BSIT 2A', 'BSIT 2A');
